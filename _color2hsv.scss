@@ -1,0 +1,38 @@
+@use "sass:math";
+
+/// Convert a Sass color to HSV values.
+///
+/// @param {color} $color
+///
+/// @return {list} The HSV values.
+@function color2hsv ($color) {
+  $color: color($color);
+  $r: red($color) / 255;
+  $g: green($color) / 255;
+  $b: blue($color) / 255;
+  $max: math.max($r, $g, $b);
+  $min: math.min($r, $g, $b);
+
+  $h: 1;
+  $s: 1;
+  $v: $max;
+  $d: $max - $min;
+
+  $s: if($max == 0, 0, $d / $max);
+
+  @if $max == $min {
+    $h: 0;
+  } @else {
+    @if $max == $r {
+      $h: ($g - $b) / $d + (if($g < $b, 6, 0));
+    } @else if $max == $g {
+      $h: ($b - $r) / $d + 2;
+    } @else if ($max == $b) {
+      $h: ($r - $g) / $d + 4;
+    }
+
+    $h: $h / 6;
+  }
+
+  @return $h * 360, $s * 100, $v * 100;
+}

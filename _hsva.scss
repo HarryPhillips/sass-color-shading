@@ -1,0 +1,17 @@
+/// Create a colour using HSB values.
+///
+/// @param {number} $h
+/// @param {number} $s
+/// @param {number} $b
+/// @param {number} $a [1]
+///
+/// @return {color} The resulting color.
+@function hsva ($h, $s, $v, $a: 1) {
+  @if $v == 0 {
+    @return hsla(0, 0, 0, $a);
+  } @else {
+    $l: ($v / 2) * (2 - ($s / 100));
+    $s: ($v * $s) / if($l < 50, $l * 2, 200 - $l * 2);
+    @return hsla($h, $s, $l, $a);
+  }
+}

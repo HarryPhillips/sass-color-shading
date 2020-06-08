@@ -1,0 +1,14 @@
+/// Brighten a colour using a shading level.
+/// 
+/// @param {color}  $color 
+/// @param {number} $level 
+///
+/// @return {color}
+@function brighten($color, $level) {
+  @return adjust-shade($color,
+    50, /* This corresponds to a yellow-ish hue */
+    2,  /* Rotate hue by 2% towards yellow per level */
+    6,  /* Desaturate by 6% per level */
+    4,  /* Raise brightness by 4% per level */
+    $level);
+}

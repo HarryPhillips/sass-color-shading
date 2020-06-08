@@ -1,0 +1,14 @@
+/// Dim a colour using a shading level.
+///
+/// @param {color}  $color
+/// @param {number} $level 
+///
+/// @return {color}
+@function dim($color, $level: 'xs') {
+  @return adjust-shade($color,
+    260, /* This corresponds to a blue-ish hue */
+    4,   /* Rotate hue by 4% towards blue per level */
+    2,   /* Desaturate by 2% per level */
+    7,   /* Dim brightness by 7% per level */
+    $level);
+}

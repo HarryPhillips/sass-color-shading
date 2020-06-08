@@ -1,0 +1,118 @@
+@use "sass:color";
+@use "sass:list";
+@use "sass:math";
+
+/// Adjust the shading on a color with a "source" hue.
+///
+/// Note that the color will lighten/darken based on your source hue, i.e. dark
+/// source hues will darken, bright source hues will lighten.
+///
+/// @param {color}  $color
+/// @param {number} $src-hue The source hue which your color will graduate
+///                          towards.
+/// @param {number} $hf      The percentage of the color wheel we move towards
+///                          the source hue, per level of shading.
+/// @param {number} $sf      The amount of saturation removed at each level of
+///                          illumination.
+/// @param {number} $vf      The amount of brightness removed at each level of
+///                          illumination.
+/// @param {number} $l       The "level" of shading to apply, the larger the
+///                          level the greater the effect.
+///
+/// @return {color} The adjusted color
+@function adjust-shade($color, $src-hue, $hf, $sf, $vf, $l, $low-sat: false) {
+  $color: color($color);
+
+  // Return the given color if an invalid level is provided
+  @if $l <= 0 {
+    @return $color;
+  }
+
+  // Prepare our color as HSV
+  $hsv: color2hsv($color);
+  $h: list.nth($hsv, 1);
+  $s: list.nth($hsv, 2);
+  $v: list.nth($hsv, 3);
+
+  // Specifically for checking the *original* color (whilst iterating) for low
+  // saturation
+  $og-color-low-sat: $s < 12;
+
+  // Handle leveling via recursion if more than one level provided
+  @if $l > 1 {
+    @for $i from 0 to $l {
+      $color: adjust-shade($color, $src-hue, $hf, $sf, $vf, 1, $og-color-low-sat);
+    }
+
+    @return $color;
+  }
+
+  // Here we see if the source light hue is in the "dark" range - I consider
+  // blues/purples to be dark hues (i.e. 200-300)
+  $src-hue-is-dark: $src-hue >= 200 and $src-hue <= 300;
+  
+  // Delegate to lighten/darken for a simple mix of white/black to ensure
+  // preservation of low-saturation colors
+  @if $low-sat and not $src-hue-is-dark {
+    @return lighten($color, $sf * 1%);
+  }
+
+  // Calculate hues as a percentage (i.e scale to 0-100)
+  $target-hue-delta: $src-hue / 360 * 100;
+  $hue-delta: $h / 360 * 100;
+
+  // Ensure a 0 hue equates to 100 for safety and clarity, as 0 === 100 due to 0
+  // === 360 on the color wheel
+  @if $h == 0 {
+    $hue-delta: 100;
+  }
+
+  // Here we're calculating the difference between the color and the source hue,
+  // as well as determining the direction we should go on the wheel
+  $hue-diff-delta: $hue-delta - $target-hue-delta;
+  $diff: math.abs($hue-diff-delta);
+  $direction: if($hue-diff-delta < 0, 'right', 'left');
+
+  // We determine the direction to go based on whether or not the difference is
+  // >= 50% of the wheel
+  @if $diff >= 50 {
+    $direction: if($direction == 'right', 'left', 'right');
+  }
+
+  // Gravitate towards the source hue, eventually locking in once the diff
+  // between the color and source is <= the hue factor
+  @if $h != $src-hue {
+    @if $diff <= $hf {
+      $h: $src-hue;
+    } @else {
+      $h: if($direction == 'right', $h + $hf, $h - $hf);
+    }
+  }
+
+  // Very simply, subtract saturation by the given saturation factor
+  $s: if($src-hue-is-dark, $s + $sf, $s - $sf);
+
+  // The way we modify value/brightness is based on whether or not the source is
+  // considered light/dark. Once decided, either simply subtract or add the
+  // given value factor.
+  $v: if($src-hue-is-dark, $v - $vf, $v + $vf);
+
+  // Here we rotate back around the colour wheel if our adjustments exceed the
+  // full rotation - so an adjusted hue of 397 would become just 37
+  @if $h > 360 {
+    $h: $h - 360;
+  }
+
+  // Floor of saturation is 0
+  @if $s < 0 {
+    $s: 0
+  }
+ 
+  // Ceiling of value is 100
+  @if $v > 100 {
+    $v: 100
+  }
+
+  // Converts into a Sass color, as the language doesn't support HSV
+  @return hsva($h, $s, $v);
+}
