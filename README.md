@@ -5,7 +5,7 @@ My own take on shading colours with Sass making use of a technique commonly used
 This is the main, driving function behind the shading. It takes a colour, some parameters, and returns a shaded colour.
 
 ### ```dim()``` and ```brighten()```
-These are the alternatives to ```darken()``` and ```brighten()```. They can be used similarly but instead of using a percentage you pass in a simple shading "level". The shading level can start from 1 and increase linearly to increase the intensity of the shade.
+These are the alternatives to ```darken()``` and ```lighten()```. They can be used similarly but instead of using a percentage you pass in a simple shading "level". The shading level can start from 1 and increase linearly to increase the intensity of the shade.
 
 ### ```color2hsv()```
 This is a function I wrote to convert an existing Sass colour to HSV, this is because experimentations I did before writing the code involved using HSV colours rather than RGB or HSL.
