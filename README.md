@@ -1,5 +1,5 @@
 # sass-color-shading
-My own take on shading colours with Sass making use of a technique commonly used to shade colours in various artistic pieces. I wrote an article explaining the process behind this code: [Improve how you shade colours with Sass (2/2)](http://harryphillips.local/#dynamic-colors-with-sass-part-2)
+My own take on shading colours with Sass making use of a technique commonly used to shade colours in various artistic pieces. I wrote an article explaining the process behind this code: [Improve how you shade colours with Sass (2/2)](http://harryphillips.dev/#dynamic-colors-with-sass-part-2)
 
 ### ```adjust-shading()```
 This is the main, driving function behind the shading. It takes a colour, some parameters, and returns a shaded colour.
