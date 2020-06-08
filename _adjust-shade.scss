@@ -18,11 +18,12 @@
 ///                          illumination.
 /// @param {number} $l       The "level" of shading to apply, the larger the
 ///                          level the greater the effect.
+/// @param {bool}   $low-sat Not intended to be passed in by the caller -
+///                          Whether or not the original colour provided was low
+///                          saturation.
 ///
 /// @return {color} The adjusted color
 @function adjust-shade($color, $src-hue, $hf, $sf, $vf, $l, $low-sat: false) {
-  $color: color($color);
-
   // Return the given color if an invalid level is provided
   @if $l <= 0 {
     @return $color;

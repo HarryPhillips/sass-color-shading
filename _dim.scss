@@ -4,7 +4,7 @@
 /// @param {number} $level 
 ///
 /// @return {color}
-@function dim($color, $level: 'xs') {
+@function dim($color, $level) {
   @return adjust-shade($color,
     260, /* This corresponds to a blue-ish hue */
     4,   /* Rotate hue by 4% towards blue per level */

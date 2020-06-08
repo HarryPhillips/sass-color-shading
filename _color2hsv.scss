@@ -6,7 +6,6 @@
 ///
 /// @return {list} The HSV values.
 @function color2hsv ($color) {
-  $color: color($color);
   $r: red($color) / 255;
   $g: green($color) / 255;
   $b: blue($color) / 255;
